@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<div id="app">
+    <h2>01. Пример подключения и использования биндингов</h2>
+
+    <h3>Вывод с помощью mustache-синтаксиса</h3>
+    <p>{{ testOutput }}</p>
+
+    <hr>
+
+    <h3>Вывод с помощью директивы</h3>
+    <p v-text="testOutput"></p>
+
+    <hr>
+
+    <h3>Вывод HTML</h3>
+    <p v-text="testHtml"></p>
+    <p v-html="testHtml"></p>
+
+    <hr>
+
+    <h3>Работа с атрибутами</h3>
+    <p id="id">Указание строки для атрибута id</p>
+    <p v-bind:id="id">Биндинг атрибута id</p>
+    <p v-bind:title="'title ' + id + ' title'">Биндинг атрибута title</p>
+
+    <hr>
+
+    <h3>Работа с булевыми атрибутами</h3>
+    <input type="text" v-bind:value="testOutput" v-bind:disabled="editAccess" />
+    <button type="button" v-bind:disabled="editAccess">Кнопка</button>
+
+    <hr>
+
+    <h3>Использование фильтров</h3>
+    <p v-bind:title="testOutput | reversed">Наведи на меня</p>
+    <p>{{ testOutput | reversed }}</p>
+</div>
+
+</body>
+
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<script>
+
+    // Шаблон находится к элементе #app
+    var app = new Vue({
+        el: '#app',
+        data: function() {
+            return {
+                testOutput: 'Курс по Vue.js!',
+                testHtml: '<strong>Strong output!!!</strong>',
+                id: 'testID',
+                editAccess: true
+            };
+        },
+        filters: {
+            reversed: function (value) {
+                return value.split('').reverse().join('')
+            }
+        }
+    });
+
+    // Через app.testOutput в консоли можно поменять значение
+    // и увидеть что отображение обновится в соответствии с ним
+</script>
+
+</html>

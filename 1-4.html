@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<style>
+    .no-avatar {
+        color: red;
+    }
+</style>
+
+<div id="app">
+    <h2>04. Пример работы с условиями, списками, классами</h2>
+
+    <ul v-if="show">
+        <li v-for="item in list">
+
+            <p v-bind:class="item.img ? '' : 'no-avatar'">
+                {{ item.name }}
+            </p>
+
+            <span v-if="!item.img">
+          Нет аватара
+        </span>
+            <img v-else v-bind:src="item.img" height="60">
+            <hr>
+        </li>
+    </ul>
+</div>
+</body>
+
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<script>
+    var app = new Vue({
+        el: '#app',
+        data: function() {
+            return {
+                // Флаг отображения списка
+                show: true,
+
+                // Список пользователей
+                list: [
+                    {
+                        name: 'Первый пользователь',
+                        img: 'https://cdn1.iconfinder.com/data/icons/freeline/32/account_friend_human_man_member_person_profile_user_users-256.png'
+                    },
+                    {
+                        name: 'Второй пользователь',
+                        img: 'https://cdn2.iconfinder.com/data/icons/ios-7-icons/50/user_male2-512.png'
+                    },
+                    {
+                        name: 'Третий пользователь'
+                    },
+                    {
+                        name: 'Четвёртый пользователь',
+                        img: 'https://maxcdn.icons8.com/Share/icon/Users//user1600.png'
+                    }
+                ]
+            };
+        }
+    });
+
+    // app.show = false
+</script>
+</html>

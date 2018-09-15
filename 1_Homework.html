@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+    <link rel="stylesheet" href="https://unpkg.com/vue-directive-tooltip@latest/css/index.min.css">
+    <script src="https://unpkg.com/vue-directive-tooltip@latest/dist/vueDirectiveTooltip.min.js"></script>
+    <!--<script src="https://unpkg.com/v-tooltip"></script>-->
+    <script>Vue.use(vueDirectiveTooltip);</script>
+
+</head>
+<body>
+    <div id="app">
+        <div v-show="content_enabled">
+            <table>
+                <tbody>
+                    <tr>
+                        <th colspan="3">Total users displayed: {{ users_displayed }} of {{ user_count() }}</th>
+                    </tr>
+                    <tr>
+                        <th v-for="key in Object.keys(user_list[0])">{{ key }}</th>
+                    </tr>
+                    <tr v-for="user in user_list" v-show="!users_banned.includes(user.last_name)">
+                        <td v-text="user.first_name"></td>
+                        <td>{{ user.last_name | capitalize }}</td>
+                        <td>
+                            <img v-if="user.avatar.length > 0" v-bind:src="user.avatar">
+                            <img v-else src="https://bit.ly/2Qsrb6d">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <button v-on:click="content_enabled=!content_enabled">{{content_enabled?'Скрыть':'Отобразить'}}</button>
+        <br>
+        <button v-tooltip="'Heman\'s Ban Hammer'" v-on:click="switch_ban">{{ban_is_active?'Unban':'Ban'}}</button>
+
+    </div>
+</body>
+<script>
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            content_enabled: true,
+            temp: {
+                banned: []
+            },
+            users_banned:['Newsted'],
+            user_list: [
+                {'first_name': 'Kirk', 'last_name': 'Hammett', 'avatar': 'https://bit.ly/2xb2VNB'},
+                {'first_name': 'Jason', 'last_name': 'Newsted', 'avatar': 'https://bit.ly/2p6TwCj'},
+                {'first_name': 'Lars', 'last_name': 'Ulrich', 'avatar': 'https://bit.ly/2xgt3G7'},
+                {'first_name': 'James', 'last_name': 'Hetfield', 'avatar': 'https://bit.ly/2xaPWM8'},
+                {'first_name': 'Cliff', 'last_name': 'Burton', 'avatar': 'https://bit.ly/2p7DXKI'},
+                {'first_name': 'Robert', 'last_name': 'Trujilio', 'avatar': ''},
+            ],
+        },
+        methods: {
+            user_count: function () { return this.user_list.length },
+            switch_ban: function () {
+                if (this.ban_is_active === true) {
+                    this.temp.banned = this.users_banned;
+                    this.users_banned = [];
+                } else {
+                    this.users_banned = this.temp.banned;
+                    this.temp.banned = [];
+                }
+            }
+        },
+        computed: {
+            users_displayed: vm => vm.user_count() - vm.users_banned.length,
+            ban_is_active: function () {
+                if (this.users_banned.length > 0) {
+                    return true;
+                } else {
+                    if (this.temp.banned.length > 0){
+                        return false;
+                    } else {
+                        return true;
+                    }
+                }
+            },
+        },
+        filters: {
+            capitalize: function (value) {
+                if (value.length == 0){
+                    return ''
+                } else {
+                    return value.toUpperCase();
+                }
+            }
+        },
+    })
+</script>
+<style>
+    table, th, td {
+        border: 2px solid black;
+        border-collapse: collapse;
+    }
+</style>
+</html>

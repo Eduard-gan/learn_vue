@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<h2>Варианты подключения</h2>
+
+<h3>Шаблон в свойстве template</h3>
+<div id="app1"></div>
+
+<hr>
+
+<h3>Шаблон в отдельном блоке</h3>
+<div id="app2"></div>
+
+<div id="app2-template" v-cloak>
+    <p>{{ title }}</p>
+</div>
+
+<style>
+    /* Чтобы скрыть шаблон со страницы к директиве v-cloak нужен стиль */
+    [v-cloak] {
+        display: none;
+    }
+</style>
+
+<hr>
+
+<h3>Шаблон в контейнере</h3>
+<div id="app3">
+    <p>{{ title }}</p>
+</div>
+
+<hr>
+
+<h3>Render-функция</h3>
+<div id="app4">
+    Содержимое контейнера будет проигнорировано
+</div>
+
+</body>
+
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<script>
+
+    // Шаблон указывается в свойстве template
+    // на мой взгляд самый неудобный способ
+    var app1 = new Vue({
+        el: '#app1',
+        template: '<p>{{ title }}</p>',
+        data: function() {
+            return {
+                title: 'Курс по Vue.js!'
+            };
+        }
+    });
+
+    // Шаблон указывается в отдельном блоке
+    // может пригодиться в некоторых случаях, но нужно
+    // не забывать про "мелькающий шаблон" или хранить в <script> с id
+    var app2 = new Vue({
+        el: '#app2',
+        template: '#app2-template',
+        data: function() {
+            return {
+                title: 'Курс по Vue.js!'
+            };
+        }
+    });
+
+    // Шаблон находится в контейнере куда монтируемся
+    // самый удобный способ, которым мы будем пользоваться
+    var app3 = new Vue({
+        el: '#app3',
+        data: function() {
+            return {
+                title: 'Курс по Vue.js!'
+            };
+        }
+    });
+
+    // Использование render-функции
+    // мы будем использовать далее с однофайловыми компонентами
+    var app4 = new Vue({
+        el: '#app4',
+        template: '<p>Содержимое template будет проигнорировано</p>',
+        // При использовании render будет проигнорирован шаблон
+        // в template и в контейнере указанном в el
+        render: function (createElement) {
+            return createElement('h2', this.title, [])
+        },
+        data: function() {
+            return {
+                title: 'Курс по Vue.js!'
+            };
+        }
+    });
+</script>
+
+</html>
