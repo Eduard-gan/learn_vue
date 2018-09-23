@@ -1,13 +1,11 @@
 <template>
-    $END$
+    <div>
+      ADD USER
+    </div>
 </template>
 
 <script>
     export default {
-        name: "Add"
+        name: "AddUser"
     }
 </script>
-
-<style scoped>
-
-</style>
