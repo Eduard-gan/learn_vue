@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head></head>
+<body>
+
+  <div id="app">
+    <h2>04. Вычисляемые свойства и отслеживание</h2>
+    
+    <p>Попробуйте поменять через app.title значение</p>
+    
+    <hr>
+
+    <h3>Логика в шаблоне (не рекомендуется)</h3>
+    <p>{{ title + ': ' + subtitle }}</p>
+    
+    <h3>Использование метода (будет вызываться каждый перерендер)</h3>
+    <p>{{ makeHeaderGreatAgain() }}</p>
+
+    <h3>Вычисляемое свойство</h3>
+    <p>{{ header }}</p>
+    
+    <em>Попробуйте поменять свойства через app.title и app.subtitle</em>
+
+    <hr>
+    
+    <h3>Отслеживание свойств объекта</h3>
+    <p>{{ objectHeader }}</p>
+    <pre>{{ testObject }}</pre>
+    
+    <em>Попробуйте поменять свойства через app.testObject или добавить новые</em>
+    <em>Обратите внимание что на обычное добавление не отреагирует</em>
+    <em>но при использовании Vue.set(app.testObject, 'comment', '42') сработает</em>
+
+  </div>
+  
+</body>
+
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<script>
+  var app = new Vue({
+    el: '#app',
+
+    data: function() {
+      return {
+        title: 'Курс по Vue.js',
+        subtitle: 'вычисляемые свойства',
+        testObject: {
+          name: 'lesson',
+          type: 'new',
+          temp: {
+            a: 1,
+            b: 2
+          }
+        }
+      };
+    },
+
+    // Вычисляемые свойства
+    // на основе других props/data/computed
+    // автоматически отслеживают обновление зависимостей
+    // кешируются
+    // не могут принимать параметры
+    // должны возвращать новое значение
+    // имеют доступ к всему через this.*
+    computed: {
+      header: function() {
+        console.log('Вычисление computed header');
+        return `${this.title}: ${this.subtitle}`;
+      },
+      
+      // Можно использовать сокращённую запись метода
+      // если есть возможность использования новых фишек ES6
+      keysCount() {
+        console.log('Вычисление computed keysCount');
+        return Object.keys(this.testObject).length;
+      },
+      
+      // можно делать computed на основе других computed
+      objectHeader() {
+        console.log('Вычисление computed objectHeader');
+        return `В testObject сейчас свойств — ${this.keysCount}`;
+      }
+    },
+    
+    // Отслеживание данных
+    // удобно для выполнения дополнительной логики при измении данных
+    // для использования асинхронной логики или "тяжелых" вычислений
+    // вызывается только при изменении (замена на такое же значение не сработает)
+    // есть доступ к данным через this.*
+    watch: {
+      // ключ равен имени отслеживаемого свойства из props/data/computed
+      title: function() {
+        console.log('Вызван watch для title. Значение через this:', this.title)
+      },
+      
+      // обработчик вызывается с новым и старым значением (если надо сравнить)
+      'title': function (newValue, oldValue) {
+        console.log('Вызван watch для title. Значение через параметр:', newValue)
+      },
+      
+      // Можно указать имя метода для обработчика без this
+      testObject: 'changedObjectHandler',
+      
+      // Есть возможность отслеживания конкретного свойства
+      'testObject.name': function() {
+        console.log('Вызван watch testObject.name')
+      },
+      
+      // Ещё один вариант записи с флагом глубого отслеживания объекта
+      // чтобы слежение реагировало на изменения во вложенных объектах
+      testObject: {
+        handler: function (newValue, oldValue) {
+          console.log('Вызван watch testObject с deep: true')
+        },
+        deep: true
+      },
+    },
+    methods: {
+      makeHeaderGreatAgain: function () {
+        console.log('Вызван метод makeHeaderGreatAgain');
+        return `${this.title}: ${this.subtitle}`;
+      },
+      
+      // Можно использовать сокращённую запись метода
+      // если есть возможность использования новых фишек ES6
+      changedObjectHandler() {
+        console.log('Вызван changedObjectHandler', this.testObject)
+      }
+    }
+  });
+</script>
+
+</html>

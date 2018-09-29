@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head></head>
+<body>
+
+  <div id="app">
+    <h2>06. Начало работы с компонентами</h2>
+    
+    <h3>Компонент</h3>
+    
+    <users-list-readonly v-bind:list="[{ name: 'Петя' },{ name: 'Федя' }, { name: 'Боря' 
+}]"></users-list-readonly>
+    
+    <hr />
+    
+    <button type="button" v-on:click="fillUsers">
+      Добавить пользователей
+    </button>
+    
+    <button type="button" v-on:click="toogleList">
+      Переключить отображение
+    </button>
+    
+    <hr />
+    
+    <h3>Переключение компонентов через условия</h3>
+    
+    <div v-if="!haveUsers">
+      Нет пользователей для отображения
+    </div>
+    <template v-else>
+      <users-list-readonly v-if="readonly" v-bind:list="list"></users-list-readonly>
+      <users-list v-else v-bind:list="list" v-on:remove-user="removeUser"></users-list>
+    </template>
+    
+    <hr />
+    
+    <h3>Динамическое переключение компонентов</h3> 
+    <div v-if="!haveUsers">
+      Нет пользователей для отображения
+    </div>
+    <component v-else
+      v-bind:is="readonly ? 'users-list-readonly' : 'users-list'"
+      v-bind:list="list"
+      v-on:remove-user="removeUser"
+    ></component>
+
+  </div>
+  
+  <script id="users-component">
+    <table>
+      <tr v-for="item in list" v-bind:key="item.name">
+        <td>
+          {{ item.name }}
+        </td>
+        <td>
+          <button type="button" v-on:click="remove(item.name)">
+            X
+          </button>
+        </td>
+      </tr>
+    </table>
+  </script>
+  
+  <script id="bullet-list">
+    <ul>
+      <li v-for="item in list" v-bind:key="item.name">
+        {{ item.name }}
+      </li>
+    </ul>
+  </script>
+  
+</body>
+
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<script>
+  var usersList = {
+    name: 'UsersList',
+    template: '#users-component',
+    props: {
+      // Ждём входными параметрами массив с пользователями
+      list: {
+        type: Array,
+        required: true
+      }
+    },
+    methods: {
+      remove(name) {
+        console.log('Из компонента таблицы генерируем событие на удаление:', name);
+        this.$emit('remove-user', name);
+      }
+    },
+    mounted() {
+      console.log('Примонтировался компонент UsersList')
+    }
+  };
+  
+  var usersListReadonly = {
+    name: 'UsersListReadonly',
+    template: '#bullet-list',
+    props: {
+      // Ждём входными параметрами массив с пользователями
+      list: {
+        type: Array,
+        required: true
+      }
+    },
+    mounted() {
+      console.log('Примонтировался компонент UsersListReadonly')
+    }
+  };
+
+  var app = new Vue({
+    el: '#app',
+    components: {
+      'users-list': usersList,
+      'users-list-readonly': usersListReadonly
+    },
+    data: function() {
+      return {
+        readonly: false,
+        
+        // Список пользователей
+        list: [
+          { name: 'Саня' }
+        ]
+      };
+    },
+    computed: {
+      haveUsers() {
+        return this.list.length > 0
+      }
+    },
+    methods: {
+      fillUsers() {
+        this.list = [
+          { name: 'Саня' },
+          { name: 'Вася' },
+          { name: 'Петя' },
+          { name: 'Федя' },
+          { name: 'Боря' }
+        ]
+      },
+      removeUser(name) {
+        console.log('В родительском компоненте обрабатываем событие на удаление:', name);
+        this.list = this.list.filter(item => item.name !== name);
+      },
+      toogleList() {
+        this.readonly = !this.readonly
+      }
+    }
+  });
+</script>
+
+</html>

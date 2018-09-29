@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head></head>
+<body>
+
+  <div id="app">
+    <h2>05. Работа с событиями и формами</h2>
+    
+    <hr>
+
+    <h3>Пример обработчика клика</h3>
+    <button type="button" v-on:click="clickHandler">
+      Обработка клика
+    </button>
+    
+    <hr>
+
+    <h3>Добавление обработчика change</h3>
+    <label>
+      <input type="checkbox" v-on:change="checkboxHandler" />
+      Пример чекбокса
+    </label>
+    
+    <hr>
+
+    <h3>Привязка к полю через связку value + input ({{ inputText }})</h3>
+    <input type="text" v-bind:value="inputText" v-on:input="inputHandler" />
+    
+    <hr>
+
+    <h3>Привязка к полю через v-model ({{ inputText }})</h3>
+    <input type="text" v-model="inputText" />
+
+    <button type="button" v-on:click="resetText">
+      Сбросить значение поля
+    </button>
+
+  </div>
+  
+</body>
+
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<script>
+  var app = new Vue({
+    el: '#app',
+
+    data: function() {
+      return {
+        inputText: '123'
+      };
+    },
+    computed: {
+
+    },
+    methods: {
+      clickHandler() {
+        console.log('Работает!')
+      },
+      
+      checkboxHandler() {
+        console.log('Вызван checkboxHandler')
+      },
+      
+      inputHandler(event) {
+        console.log('Вызван inputHandler')
+        this.inputText = event.target.value
+      },
+      
+      resetText() {
+        console.log('Вызван resetText')
+        this.inputText = ''
+      }
+    }
+  });
+</script>
+
+</html>
